@@ -1,11 +1,42 @@
-#include <iostream>
-#include <vector>
+#include <bits/stdc++.h>
 
-using std::vector;
+using namespace std;
 
 int lcs3(vector<int> &a, vector<int> &b, vector<int> &c) {
-  //write your code here
-  return std::min(std::min(a.size(), b.size()), c.size());
+
+  int n = a.size();
+  int m = b.size();
+  int k = c.size();
+
+  vector<vector<vector<int>>> dTable(n+1,vector<vector<int>>(m+1,vector<int>(k+1)));
+
+  // Initialize first rows
+  for (size_t i = 0 ; i <= n ; i++){
+    dTable[i][0][0] = 0;
+  }
+
+  for (size_t j = 0 ; j <= m ; j++){
+    dTable[0][j][0] = 0;
+  }
+
+  for (size_t l = 0 ; l <= k ; l++){
+    dTable[0][0][l] = 0;
+  }
+
+  for (size_t i = 1 ; i <= n ; i++){
+    for (size_t j = 1 ; j <= m ; j++){
+      for (size_t l = 1 ; l <= k ; l++){
+        if ((a[i-1] == b [j-1]) && (a[i-1] == c[l-1])){
+          dTable[i][j][l] = 1 + dTable[i-1][j-1][l-1];
+        }
+        else{
+          dTable[i][j][l] = max({dTable[i-1][j][l],dTable[i][j-1][l],dTable[i][j][l-1],dTable[i-1][j-1][l],dTable[i-1][j][l-1],dTable[i][j-1][l-1]});
+        }
+      }
+    }
+  }
+
+  return dTable[n][m][k];
 }
 
 int main() {
